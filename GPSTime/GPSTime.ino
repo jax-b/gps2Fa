@@ -9,6 +9,12 @@
 */
 
 #include <Arduino_MKRGPS.h>
+#include <time.h>
+
+time_t rawtime = 1262304000;
+struct tm  ts;
+char       buf[80];
+
 void setup() {
   // initialize serial communications and wait for port to open:
   Serial.begin(9600);
@@ -33,10 +39,13 @@ void loop() {
     Serial.print(".");
   }
   Serial.println();
-
+  rawtime = getGPSTime();
   Serial.print("GPS Time: ");
   Serial.println(getGPSTime());
-  
+
+  ts = *localtime(&rawtime);
+  strftime(buf, sizeof(buf), "%a %Y-%m-%d %I:%M:%S %P %Z", &ts);
+  Serial.print(buf);
 }
 float getGPSTime() {
   //Serial.println("Wakey Wakey");
